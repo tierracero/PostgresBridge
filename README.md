@@ -3,7 +3,7 @@
         <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License">
     </a>
     <a href="https://swift.org">
-        <img src="https://img.shields.io/badge/swift-5.2-brightgreen.svg" alt="Swift 5.2">
+        <img src="https://img.shields.io/badge/swift-6.3-brightgreen.svg" alt="Swift 6.3">
     </a>
     <img src="https://img.shields.io/github/workflow/status/SwifQL/PostgresBridge/test" alt="Github Actions">
     <a href="https://discord.gg/q5wCPYv">
@@ -13,9 +13,23 @@
 
 # Bridge to PostgreSQL
 
-Work with Postgres with SwifQL through its pure NIO driver.
+Build queries with SQL and execute them through PostgresNIO.
 
 ## Installation
+
+Requires Swift 6.3 or newer. This version uses
+[`tierracero/Bridges` 2.x](https://github.com/tierracero/Bridges), which depends on
+[`swiftstream/SQL` 2.x](https://github.com/swiftstream/SQL), preserving pooling,
+transactions, migrations, and application/request integration.
+
+```sh
+swift package resolve
+swift test
+```
+
+When consuming this migration before a new release, use a local package dependency
+(`.package(path: "../PostgresBridge")`) instead of an older published tag.
+
 
 ```swift
 .package(url: "https://github.com/SwifQL/PostgresBridge.git", from:"1.0.0-rc"),
@@ -27,7 +41,26 @@ Work with Postgres with SwifQL through its pure NIO driver.
 ]),
 ```
 
-For more info please take a look at the `Bridges` repo.
+For more info, see the [Bridges fork](https://github.com/tierracero/Bridges).
+Ensure any application integration package uses this same fork and its 2.x APIs.
+
+## Migrating query code
+
+`import PostgresBridge` now re-exports `SQL` instead of `SwifQL`. Replace
+`import SwifQL` with `import SQL`, `SwifQLable` with `SQLable`, and query roots
+such as `SwifQL.select(...)` with `SQL.select(...)`.
+
+```swift
+import PostgresBridge
+
+// Inside a PostgresBridge connection closure:
+let query = SQL.select("hello")
+// query.execute(on: connection) returns EventLoopFuture<[PostgresRow]>.
+```
+
+`LIBS_DEVELOPMENT=1` uses the sibling `../Bridges` checkout; that checkout must
+also use SQL and requires its own sibling `../SQL` checkout.
+
 
 ## Advanced use cases:
 

@@ -19,7 +19,7 @@ extension DatabaseHost {
         if let tls = ProcessInfo.processInfo.environment["PG_SSL"] {
             sslRequired = ["1", "true", "require"].contains(tls.lowercased())
         }
-        return .init(hostname: host, port: port ?? 5432, username: user, password: pwd, tlsConfiguration: sslRequired ? TLSConfiguration.forClient() : nil)
+        return .init(hostname: host, port: port ?? 5432, username: user, password: pwd, tlsConfiguration: sslRequired ? TLSConfiguration.makeClientConfiguration() : nil)
     }
     
     public init?(url: URL) {
@@ -41,7 +41,7 @@ extension DatabaseHost {
 
         let tlsConfiguration: TLSConfiguration?
         if url.query?.contains("ssl=true") == true || url.query?.contains("sslmode=require") == true {
-            tlsConfiguration = TLSConfiguration.forClient()
+            tlsConfiguration = TLSConfiguration.makeClientConfiguration()
         } else {
             tlsConfiguration = nil
         }

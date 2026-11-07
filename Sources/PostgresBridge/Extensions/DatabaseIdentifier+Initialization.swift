@@ -45,7 +45,7 @@ public class PostgresDatabaseIdentifier: DatabaseIdentifier, PostgresDatabaseIde
         }
     }
     
-    public func query(_ query: SwifQLable, on bridges: AnyBridgesObject) -> EventLoopFuture<[BridgesRow]> {
+    public func query(_ query: SQLable, on bridges: AnyBridgesObject) -> EventLoopFuture<[BridgesRow]> {
         PostgresBridge(bridges.bridges.bridge(to: B.self, on: bridges.eventLoop)).connection(to: self) { conn in
             query.execute(on: conn).map { $0 as [BridgesRow] }
         }

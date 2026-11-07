@@ -1,13 +1,13 @@
 //
-//  SwifQLable+Execute.swift
+//  SQLable+Execute.swift
 //  PostgresBridge
 //
 //  Created by Mihael Isaev on 27.01.2020.
 //
 
-import SwifQL
+import SQL
 
-extension SwifQLable {
+extension SQLable {
     @discardableResult
     public func execute(on conn: PostgresConnection) -> EventLoopFuture<[PostgresRow]> {
         let prepared = prepare(.psql).splitted

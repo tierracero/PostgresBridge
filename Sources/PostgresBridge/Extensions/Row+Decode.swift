@@ -8,7 +8,7 @@
 import Foundation
 import Bridges
 
-extension PostgresRow: BridgesRow {
+extension PostgresRow: @retroactive BridgesRow {
     public func decode<D>(model type: D.Type, prefix: String?) throws -> D where D : Decodable {
         try sql().decode(model: type, prefix: prefix)
     }

@@ -8,7 +8,8 @@
 import Bridges
 import NIO
 
-extension PostgresConnection: BridgeConnection {
+extension PostgresConnection: @retroactive BridgeConnection {
+    
     public var dialect: SQLDialect { .psql }
     
     public func query(raw: String) -> EventLoopFuture<Void> {
@@ -16,7 +17,7 @@ extension PostgresConnection: BridgeConnection {
         return query(raw).transform(to: ())
     }
     
-    public func query(sql: SwifQLable) -> EventLoopFuture<Void> {
+    public func query(sql: SQLable) -> EventLoopFuture<Void> {
         logger.debug("\(sql)")
         return sql.execute(on: self).transform(to: ())
     }
@@ -26,8 +27,9 @@ extension PostgresConnection: BridgeConnection {
         return query(raw).map { $0.rows }.all(decoding: type)
     }
     
-    public func query<V>(sql: SwifQLable, decoding type: V.Type) -> EventLoopFuture<[V]> where V : Decodable {
+    public func query<V>(sql: SQLable, decoding type: V.Type) -> EventLoopFuture<[V]> where V : Decodable {
         logger.debug("\(sql)")
         return sql.execute(on: self).all(decoding: type)
     }
+    
 }

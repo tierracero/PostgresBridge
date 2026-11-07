@@ -3,4 +3,4 @@
 @_exported import NIO
 @_exported import Bridges
 @_exported import Foundation
-@_exported import SwifQL
+@_exported import SQL
