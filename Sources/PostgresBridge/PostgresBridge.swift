@@ -1,4 +1,5 @@
 import NIO
+import NIOConcurrencyHelpers
 import PostgresNIO
 import AsyncKit
 import Bridges
@@ -36,7 +37,8 @@ public struct PostgresBridge: ContextBridgeable {
     }
 }
 
-public final class PBR: Bridgeable {
+/// The pool registry is serialized by `poolsLock`; each NIO pool handles its own event-loop state.
+public final class PBR: Bridgeable, @unchecked Sendable {
     public typealias Source = PostgresConnectionSource
     public typealias Database = PostgresDatabase
     public typealias Connection = PostgresConnection
@@ -44,6 +46,7 @@ public final class PBR: Bridgeable {
     public static var dialect: SQLDialect { .psql }
     
     public var pools: [String: GroupPool] = [:]
+    public let poolsLock = NIOLock()
     
     public let logger: Logger
     public let eventLoopGroup: EventLoopGroup

@@ -30,11 +30,10 @@ deps.append("https://github.com/vapor/postgres-nio.git", from: "1.0.0", targets:
 
 if localDev {
     deps.appendLocal("Bridges", targets: "Bridges")
-    deps.appendLocal("SQL", targets: "SQL")
 } else {
     deps.append("https://github.com/tierracero/Bridges.git", from: "2.0.0", targets: .product(name: "Bridges", package: "Bridges"))
-    deps.append("https://github.com/swiftstream/SQL.git", from: "2.2.0", targets: .product(name: "SQL", package: "SQL"))
 }
+deps.append("https://github.com/swiftstream/SQL.git", from: "2.2.0", targets: .product(name: "SQL", package: "SQL"))
 
 // MARK: - Package
 
