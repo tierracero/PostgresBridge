@@ -27,11 +27,12 @@ extension Array where Element == Dep {
 var deps: [Dep] = []
 
 deps.append("https://github.com/vapor/postgres-nio.git", from: "1.0.0", targets: .product(name: "PostgresNIO", package: "postgres-nio"))
+deps.append("https://github.com/apple/swift-nio.git", from: "2.2.0", targets: .product(name: "NIO", package: "swift-nio"), .product(name: "NIOConcurrencyHelpers", package: "swift-nio"))
 
 if localDev {
     deps.appendLocal("Bridges", targets: "Bridges")
 } else {
-    deps.append("https://github.com/tierracero/Bridges.git", from: "2.0.0", targets: .product(name: "Bridges", package: "Bridges"))
+    deps.append("https://github.com/tierracero/Bridges.git", from: "2.0.1", targets: .product(name: "Bridges", package: "Bridges"))
 }
 deps.append("https://github.com/swiftstream/SQL.git", from: "2.2.0", targets: .product(name: "SQL", package: "SQL"))
 

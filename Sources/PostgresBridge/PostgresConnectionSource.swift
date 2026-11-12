@@ -15,6 +15,11 @@ public struct PostgresConnectionSource: BridgesPoolSource {
         } catch {
             return eventLoop.makeFailedFuture(error)
         }
+        // Capture immutable authentication values, not the non-Sendable identifier,
+        // in the callback that runs after the asynchronous connection attempt.
+        let username = db.host.username
+        let database = db.name
+        let password = db.host.password
         return PostgresConnection.connect(
             to: address,
             tlsConfiguration: self.db.host.tlsConfiguration,
@@ -22,9 +27,9 @@ public struct PostgresConnectionSource: BridgesPoolSource {
             on: eventLoop
         ).flatMap { conn in
             conn.authenticate(
-                username: self.db.host.username,
-                database: self.db.name,
-                password: self.db.host.password,
+                username: username,
+                database: database,
+                password: password,
                 logger: logger
             ).flatMapErrorThrowing { error in
                 let _: EventLoopFuture<Void> = conn.close()

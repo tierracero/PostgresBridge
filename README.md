@@ -62,6 +62,24 @@ let query = SQL.select("hello")
 also use SQL and requires its own sibling `../SQL` checkout.
 
 
+## Concurrency and shutdown
+
+Requires Bridges 2.0.1 or newer. `PBR` has a checked `Sendable` conformance;
+its pool registry protects every dictionary access with a private lock.
+The small AsyncKit wrappers retain documented `@unchecked Sendable` conformances
+because AsyncKit's pool types do not declare Sendable and marshal connection
+operations onto their owning event loops.
+
+Use `register` and `pool` for atomic registry operations. The legacy `pools`
+property returns a synchronized snapshot; direct read-modify-write operations
+are not atomic, and replacing live pools can bypass their shutdown lifecycle.
+Repeated registration keeps the existing pool for that database key.
+
+Call `shutdown()` outside an event-loop thread, before stopping the event-loop
+group. Destructor cleanup is nonblocking, but is not a replacement for orderly
+application shutdown. Database identifiers, custom address closures, migrations,
+and mutable SQL models do not become Sendable just because `PBR` is Sendable.
+
 ## Advanced use cases:
 
 ### Type safe identifiers
